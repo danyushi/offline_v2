@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sdy.common.bean.TableProcessDim;
 import com.sdy.common.domain.Constant;
+import com.sdy.common.utils.HBaseUtil;
 import com.sdy.retail.v1.realtime.dim.function.INHBase;
 import com.sdy.retail.v1.realtime.dim.function.TableProcessFunction;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
@@ -12,20 +13,21 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 import lombok.SneakyThrows;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
-
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.kafka.source.KafkaSource;
-
 import org.apache.flink.streaming.api.datastream.*;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;
+import org.apache.hadoop.hbase.client.Connection;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Properties;
 
 /**
  * @Package com.sdy.retail.v1.realtime.App.DimApp
@@ -71,9 +73,9 @@ public class DimApp {
         DataStreamSource<String> kafkastrdev2 = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka Source");
         SingleOutputStreamOperator<JSONObject> jsonObjDS = kafkastrdev2.process(new ProcessFunction<String, JSONObject>() {@Override public void processElement(String s, ProcessFunction<String, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
             JSONObject jsonObj = JSON.parseObject(s);
-            String db = jsonObj.getString("database");
-            String type = jsonObj.getString("type");
-            String data = jsonObj.getString("data");
+//            String db = jsonObj.getString("database");
+//            String type = jsonObj.getString("type");
+//            String data = jsonObj.getString("data");
 
 //            if ("gmall2025".equals(db)
 //                    && ("insert".equals(type)
@@ -95,7 +97,7 @@ public class DimApp {
         prop.setProperty("scan.incremental.snapshot.chunk.key-column", "id");
 
         MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
-                .hostname("10.39.48.36")
+                .hostname("10.160.60.17")
                 .port(3306)
                 .databaseList("realtime_v1_config") // 设置捕获的数据库， 如果需要同步整个数据库，请将 tableList 设置为 ".*".
                 .tableList("realtime_v1_config.table_process_dim") // 设置捕获的表
@@ -127,45 +129,45 @@ public class DimApp {
             }
         }).setParallelism(1);
 
-        //        tpDS.map(
-//                new RichMapFunction<TableProcessDim, TableProcessDim>() {
-//
-//                    private Connection hbaseConn;
-//
-//                    @Override
-//                    public void open(Configuration parameters) throws Exception {
-//                        hbaseConn = HBaseutil.getHBaseConnection();
-//                    }
-//
-//                    @Override
-//                    public void close() throws Exception {
-//                        HBaseutil.closeHBaseConnection(hbaseConn);
-//
-//                    }
-//
-//                    @Override
-//
-//                    public TableProcessDim map(TableProcessDim tp) throws Exception {
-//                        String op = tp.getOp();
-//                        String sinkTable = tp.getSinkTable();
-//                        String[] sinkFamilies = tp.getSinkFamily().split(",");
-//                        if ("d".equals(op)) {
-//                            HBaseutil.dropHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable);
-//
-//                        } else if ("r".equals(op) || "c".equals(op)) {
-//
-//                            HBaseutil.createHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable, sinkFamilies);
-//
-//                        } else {
-//                            HBaseutil.dropHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable);
-//                            HBaseutil.createHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable, sinkFamilies);
-//
-//                        }
-//
-//                        return tp;
-//                    }
-//                }
-//        );
+                tpDS.map(
+                new RichMapFunction<TableProcessDim, TableProcessDim>() {
+
+                    private Connection hbaseConn;
+
+                    @Override
+                    public void open(Configuration parameters) throws Exception {
+                        hbaseConn = HBaseUtil.getHBaseConnection();
+                    }
+
+                    @Override
+                    public void close() throws Exception {
+                        HBaseUtil.closeHBaseConnection(hbaseConn);
+
+                    }
+
+                    @Override
+
+                    public TableProcessDim map(TableProcessDim tp) throws Exception {
+                        String op = tp.getOp();
+                        String sinkTable = tp.getSinkTable();
+                        String[] sinkFamilies = tp.getSinkFamily().split(",");
+                        if ("d".equals(op)) {
+                            HBaseUtil.dropHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable);
+
+                        } else if ("r".equals(op) || "c".equals(op)) {
+
+                            HBaseUtil.createHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable, sinkFamilies);
+
+                        } else {
+                            HBaseUtil.dropHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable);
+                            HBaseUtil.createHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable, sinkFamilies);
+
+                        }
+
+                        return tp;
+                    }
+                }
+        );
 
 
         MapStateDescriptor<String, TableProcessDim> mapStateDescriptor

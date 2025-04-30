@@ -33,11 +33,11 @@ public class flinkcdc {
         prop.setProperty("scan.incremental.snapshot.chunk.key-column", "id");
 
         MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
-                .hostname("10.39.48.36")
+                .hostname("10.160.60.17")
                 .port(3306)
                 .databaseList("gmall_v1_danyu_shi") // 设置捕获的数据库， 如果需要同步整个数据库，请将 tableList 设置为 ".*".
-                .tableList("gmall_v1_danyu_shi.order_detail,gmall_v1_danyu_shi.order_detail_coupon,gmall_v1_danyu_shi.order_detail_activity,gmall_v1_danyu_shi.order_info") // 设置捕获的表
-//                 .tableList("gmall_v1_danyu_shi.*") // 设置捕获的表
+//                .tableList("gmall_v1_danyu_shi.order_detail,gmall_v1_danyu_shi.order_detail_coupon,gmall_v1_danyu_shi.order_detail_activity,gmall_v1_danyu_shi.order_info") // 设置捕获的表
+                 .tableList("gmall_v1_danyu_shi.*") // 设置捕获的表
                 .username("root")
                 .password("Zh1028,./")
                 .startupOptions(StartupOptions.initial())  // 从最早位点启动

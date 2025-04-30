@@ -132,6 +132,7 @@ public class DwdBaseLog {
                         }
 
                         JSONObject startJsonObj = jsonObj.getJSONObject("start");
+
                         if (startJsonObj != null) {
                             //启动日志
                             context.output(startTag, jsonObj.toJSONString());

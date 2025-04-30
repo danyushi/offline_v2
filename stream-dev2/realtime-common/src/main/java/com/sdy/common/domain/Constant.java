@@ -12,14 +12,14 @@ public class Constant {
     public static final String TOPIC_DB = "stream-dev2-danyushi";
     public static final String TOPIC_LOG = "stream-dev1-danyushi";
 
-    public static final String MYSQL_HOST = "10.39.48.36";
+    public static final String MYSQL_HOST = "10.160.60.17";
     public static final int MYSQL_PORT = 3306;
     public static final String MYSQL_USER_NAME = "root";
     public static final String MYSQL_PASSWORD = "Zh1028,./";
     public static final String HBASE_NAMESPACE = "ns_danyu_shi";
 
     public static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
-    public static final String MYSQL_URL = "jdbc:mysql://10.39.48.36:3306?useSSL=false";
+    public static final String MYSQL_URL = "jdbc:mysql://10.160.60.17:3306?useSSL=false";
 
 //    public static final String TOPIC_DWD_TRAFFIC_START = "dwd_traffic_start";
 //    public static final String TOPIC_DWD_TRAFFIC_ERR = "dwd_traffic_err";

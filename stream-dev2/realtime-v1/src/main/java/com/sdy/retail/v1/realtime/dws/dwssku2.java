@@ -37,9 +37,9 @@ import org.apache.flink.util.Collector;
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 /**
- * @Package com.jiao.dws.app.DwsTradeSkuOrderWindow
- * @Author Chen.Run.ze
- * @Date 2025/4/16 14:34
+ * @Package com.sdy.retail.v1.realtime.dws.dwssku2
+ * @Author danyu-shi
+ * @Date 2025/4/16 8:46
  * @description: 1
  */
 public class dwssku2 {

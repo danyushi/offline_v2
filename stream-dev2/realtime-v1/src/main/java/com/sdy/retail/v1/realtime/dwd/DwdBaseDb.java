@@ -30,10 +30,10 @@ import org.apache.flink.util.Collector;
 import java.util.*;
 
 /**
- * @Package com.zsf.retail.v1.realtime.dwd.DwdBaseDb
- * @Author zhao.shuai.fei
- * @Date 2025/4/11 10:01
- * @description:处理逻辑比较简单的事实表动态分流处理
+ * @Package com.sdy.retail.v1.realtime.dwd
+ * @Author danyu-shi
+ * @Date 2025/4/10 20:38
+ * @description:
  */
 public class DwdBaseDb {
     @SneakyThrows
@@ -71,7 +71,7 @@ public class DwdBaseDb {
         properties.setProperty("decimal.handling.mode","double");
         properties.setProperty("time.precision.mode","connect");
         MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
-                .hostname("10.39.48.36")
+                .hostname("10.160.60.17")
                 .port(3306)
                 .databaseList("realtime_v1_config") // 设置捕获的数据库， 如果需要同步整个数据库，请将 tableList 设置为 ".*".
                 .tableList("realtime_v1_config.table_process_dwd") // 设置捕获的表
@@ -113,11 +113,11 @@ public class DwdBaseDb {
                 }
         );
 //        tpDS.print();
-        //TODO 对配置流进行广播 ---broadcast
+        // 对配置流进行广播 ---broadcast
         MapStateDescriptor<String, TableProcessDwd> mapStateDescriptor = new MapStateDescriptor<>("mapStateDescriptor", String.class, TableProcessDwd.class);
 
         BroadcastStream<TableProcessDwd> broadcastDS = tpDS.broadcast(mapStateDescriptor);
-        //TODO 关联主流业务数据和广播流中的配置数据   --- connect
+        // 关联主流业务数据和广播流中的配置数据   --- connect
         BroadcastConnectedStream<JSONObject, TableProcessDwd> connectDS = dbObjDS1.connect(broadcastDS);
 
         SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDwd>> splitDS = connectDS.process(new BaseDbTableProcessFunction(mapStateDescriptor));

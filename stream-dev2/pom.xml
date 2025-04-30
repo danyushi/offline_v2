@@ -11,7 +11,7 @@
     <modules>
         <module>realtime-v1</module>
         <module>realtime-common</module>
-        <module>realtime-publishe</module>
+<!--        <module>realtime-publishe</module>-->
     </modules>
 
     <properties>
@@ -181,20 +181,20 @@
 
             <!-- flink 相关依赖 结束 -->
 
-<!--            &lt;!&ndash; hadoop 相关依赖 开发 &ndash;&gt;-->
-<!--            <dependency>-->
-<!--                <groupId>org.apache.hadoop</groupId>-->
-<!--                <artifactId>hadoop-common</artifactId>-->
-<!--                <version>${hadoop.version}</version>-->
-<!--            </dependency>-->
+            <!--            &lt;!&ndash; hadoop 相关依赖 开发 &ndash;&gt;-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.apache.hadoop</groupId>-->
+            <!--                <artifactId>hadoop-common</artifactId>-->
+            <!--                <version>${hadoop.version}</version>-->
+            <!--            </dependency>-->
 
-<!--            &lt;!&ndash;如果保存检查点到hdfs上，需要引入此依赖&ndash;&gt;-->
-<!--            <dependency>-->
-<!--                <groupId>org.apache.hadoop</groupId>-->
-<!--                <artifactId>hadoop-client</artifactId>-->
-<!--                <version>${hadoop.version}</version>-->
-<!--                &lt;!&ndash;                <scope>provided</scope>&ndash;&gt;-->
-<!--            </dependency>-->
+            <!--            &lt;!&ndash;如果保存检查点到hdfs上，需要引入此依赖&ndash;&gt;-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.apache.hadoop</groupId>-->
+            <!--                <artifactId>hadoop-client</artifactId>-->
+            <!--                <version>${hadoop.version}</version>-->
+            <!--                &lt;!&ndash;                <scope>provided</scope>&ndash;&gt;-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.flink</groupId>
                 <artifactId>flink-hadoop-fs</artifactId>
