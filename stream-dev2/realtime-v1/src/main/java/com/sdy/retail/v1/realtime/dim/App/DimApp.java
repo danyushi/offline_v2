@@ -90,6 +90,8 @@ public class DimApp {
         );
 
 //        jsonObjDS.print();
+
+
         Properties prop = new Properties();
         prop.put("useSSL","false");
         prop.put("decimal.handling.mode","double");
@@ -181,7 +183,7 @@ public class DimApp {
         );
 
         dimDS.print();
-        dimDS.addSink(new INHBase());
+//        dimDS.addSink(new INHBase());
 
 
         env.execute();

@@ -136,7 +136,7 @@ public class DwdTDPaySucTable {
                         "on rp.order_id=oi.id " +
                         "join base_dic for system_time as of rp.proc_time as dic " +
                         "on rp.payment_type=dic.dic_code ");
-//        result.execute().print();
+        result.execute().print();
 
 
 //        tableEnv.executeSql("create table stream_dwdTDpaysucTable_danyushi(" +

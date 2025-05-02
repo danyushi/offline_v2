@@ -23,7 +23,7 @@ public class Dwdrf {
         env.setParallelism(1);
 
         DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
-        dwdRf.print();
+//        dwdRf.print();
 
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
@@ -96,30 +96,30 @@ public class Dwdrf {
                 "JOIN base_dic FOR SYSTEM_TIME AS OF c.proc_time AS dic\n" +
                 "ON c.appraise = dic.dic_code;");
 
-//        CommdicTable.execute().print();
+        CommdicTable.execute().print();
 
-        tableEnv.executeSql("CREATE TABLE stream_DwdCommdicTable_danyushi(\n" +
-                "id string,\n" +
-                "user_id string,\n" +
-                "sku_id string,\n" +
-                "appraise string,\n" +
-                "appraise_name string,\n" +
-                "comment_txt string,\n" +
-                "op string,\n" +
-                "ts_ms string,\n" +
-                "PRIMARY KEY (id) NOT ENFORCED\n" +
-                ")WITH(\n" +
-                "'connector' = 'upsert-kafka',\n" +
-                "'topic' = 'stream_DwdCommdicTable_danyushi',\n" +
-                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-                "'key.format' = 'json',\n" +
-                "'value.format' = 'json'\n" +
-                ");");
+//        tableEnv.executeSql("CREATE TABLE stream_DwdCommdicTable_danyushi(\n" +
+//                "id string,\n" +
+//                "user_id string,\n" +
+//                "sku_id string,\n" +
+//                "appraise string,\n" +
+//                "appraise_name string,\n" +
+//                "comment_txt string,\n" +
+//                "op string,\n" +
+//                "ts_ms string,\n" +
+//                "PRIMARY KEY (id) NOT ENFORCED\n" +
+//                ")WITH(\n" +
+//                "'connector' = 'upsert-kafka',\n" +
+//                "'topic' = 'stream_DwdCommdicTable_danyushi',\n" +
+//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+//                "'key.format' = 'json',\n" +
+//                "'value.format' = 'json'\n" +
+//                ");");
 
 
 //        CommdicTable.executeInsert("stream_DwdCommdicTable_danyushi");
 
-        env.execute("asd");
+//        env.execute("asd");
 
     }
 }

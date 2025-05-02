@@ -21,9 +21,8 @@ public class Dwdbf {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
 
-//        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
+        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
 //        dwdRf.print();
-//
 //        env.execute();
 
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);

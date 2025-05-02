@@ -121,37 +121,37 @@ public class DwdNxdTAble {
         result.execute().print();
 
 
-                tableEnv.executeSql(
-                        "create table stream_DwdNXDTable_danyushi(" +
-                                "id string," +
-                                "order_id string," +
-                                "user_id string," +
-                                "sku_id string," +
-                                "sku_name string," +
-                                "province_id string," +
-                                "activity_id string," +
-                                "activity_rule_id string," +
-                                "coupon_id string," +
-                                "date_id string," +
-                                "cancel_time string," +
-                                "sku_num string," +
-                                "split_original_amount string," +
-                                "split_activity_amount string," +
-                                "split_coupon_amount string," +
-                                "split_total_amount string," +
-                                "ts_ms BIGINT " +
-                "primary key(id) not enforced " +
-                ")WITH(\n" +
-                "'connector' = 'upsert-kafka',\n" +
-                "'topic' = 'stream_DwdNXDTable_danyushi',\n" +
-                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-                "'key.format' = 'json',\n" +
-                "'value.format' = 'json'\n" +
-                ");");
-
-
-
-        result.executeInsert("stream_DwdNXDTable_danyushi");
+//                tableEnv.executeSql(
+//                        "create table stream_DwdNXDTable_danyushi(" +
+//                                "id string," +
+//                                "order_id string," +
+//                                "user_id string," +
+//                                "sku_id string," +
+//                                "sku_name string," +
+//                                "province_id string," +
+//                                "activity_id string," +
+//                                "activity_rule_id string," +
+//                                "coupon_id string," +
+//                                "date_id string," +
+//                                "cancel_time string," +
+//                                "sku_num string," +
+//                                "split_original_amount string," +
+//                                "split_activity_amount string," +
+//                                "split_coupon_amount string," +
+//                                "split_total_amount string," +
+//                                "ts_ms BIGINT " +
+//                "primary key(id) not enforced " +
+//                ")WITH(\n" +
+//                "'connector' = 'upsert-kafka',\n" +
+//                "'topic' = 'stream_DwdNXDTable_danyushi',\n" +
+//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+//                "'key.format' = 'json',\n" +
+//                "'value.format' = 'json'\n" +
+//                ");");
+//
+//
+//
+//        result.executeInsert("stream_DwdNXDTable_danyushi");
 
 
 

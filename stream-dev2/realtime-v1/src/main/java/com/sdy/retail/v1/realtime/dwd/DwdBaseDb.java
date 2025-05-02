@@ -45,6 +45,8 @@ public class DwdBaseDb {
 //3.2     创建消费者对象
         DataStreamSource<String> dbStrDS = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "group03");
 
+        dbStrDS.print();
+
         SingleOutputStreamOperator<JSONObject> dbObjDS1 = dbStrDS.process(new ProcessFunction<String, JSONObject>() {
             @Override
             public void processElement(String s, ProcessFunction<String, JSONObject>.Context context, Collector<JSONObject> out) throws Exception {
@@ -124,7 +126,7 @@ public class DwdBaseDb {
 
         splitDS.print("1-->");
 
-        splitDS.sinkTo(FlinkSinkUtil.getKafkaSink());
+//        splitDS.sinkTo(FlinkSinkUtil.getKafkaSink());
 
 
         env.execute();

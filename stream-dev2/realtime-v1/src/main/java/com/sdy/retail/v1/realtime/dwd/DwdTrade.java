@@ -1,6 +1,8 @@
 package com.sdy.retail.v1.realtime.dwd;
 
+import com.sdy.common.utils.KafkaUtil;
 import lombok.SneakyThrows;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -23,7 +25,6 @@ public class DwdTrade {
 
 //        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
 //        dwdRf.print();
-////
 //        env.execute();
 
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
@@ -88,7 +89,7 @@ public class DwdTrade {
                         "where `source`['table'] = 'order_refund_info' " +
                         "and op= 'c' ");
 
-        orderRefundInfo.execute().print();
+//        orderRefundInfo.execute().print();
 
         tableEnv.createTemporaryView("order_refund_info", orderRefundInfo);
 
@@ -168,7 +169,7 @@ public class DwdTrade {
 
 
 
-        env.execute();
+//        env.execute();
 
     }
 }

@@ -186,11 +186,11 @@ public class DwdBaseLog {
         SideOutputDataStream<String> startDS = pageDS.getSideOutput(startTag);
         SideOutputDataStream<String> displayDS = pageDS.getSideOutput(displayTag);
         SideOutputDataStream<String> actionDS = pageDS.getSideOutput(actionTag);
-//        pageDS.print("页面:");
-//        errDS.print("错误:");
-//        startDS.print("启动:");
-//        displayDS.print("曝光:");
-//        actionDS.print("动作:");
+        pageDS.print("页面:");
+        errDS.print("错误:");
+        startDS.print("启动:");
+        displayDS.print("曝光:");
+        actionDS.print("动作:");
 
 
         //传入kafka
