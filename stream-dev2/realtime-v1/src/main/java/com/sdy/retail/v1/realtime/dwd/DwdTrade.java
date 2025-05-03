@@ -1,8 +1,6 @@
 package com.sdy.retail.v1.realtime.dwd;
 
-import com.sdy.common.utils.KafkaUtil;
 import lombok.SneakyThrows;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -23,12 +21,8 @@ public class DwdTrade {
         env.setParallelism(1);
 
 
-//        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
-//        dwdRf.print();
-//        env.execute();
-
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
-//        tableEnv.getConfig().setIdleStateRetention(Duration.ofSeconds(30 * 60 + 5));
+        tableEnv.getConfig().setIdleStateRetention(Duration.ofSeconds(30 * 60 + 5));
 
         tableEnv.executeSql("CREATE TABLE topic_db (\n" +
                 "    `before` MAP<STRING, STRING>,\n" +
@@ -48,7 +42,7 @@ public class DwdTrade {
                 "    'format' = 'json'\n" +
                 ")");
 
-//        tableEnv.executeSql("select * from topic_db").print();
+        tableEnv.executeSql("select * from topic_db").print();
 
 //字典表
         tableEnv.executeSql("CREATE TABLE base_dic (\n" +
@@ -65,7 +59,7 @@ public class DwdTrade {
                 "'table-name'='ns_danyu_shi:dim_base_dic',\n" +
                 "'zookeeper.quorum'='cdh02:2181'\n" +
                 ");");
-        //        tableEnv.executeSql("select * from base_dic").print();
+                tableEnv.executeSql("select * from base_dic").print();
 
 
 
@@ -89,7 +83,7 @@ public class DwdTrade {
                         "where `source`['table'] = 'order_refund_info' " +
                         "and op= 'c' ");
 
-//        orderRefundInfo.execute().print();
+        orderRefundInfo.execute().print();
 
         tableEnv.createTemporaryView("order_refund_info", orderRefundInfo);
 
@@ -106,7 +100,7 @@ public class DwdTrade {
                         "and `after`['order_status']='1005' ");
 
 
-//        orderInfo.execute().print();
+        orderInfo.execute().print();
         tableEnv.createTemporaryView("order_info", orderInfo);
 
 
@@ -135,41 +129,40 @@ public class DwdTrade {
                         "join base_dic for system_time as of ri.proc_time as dic2 " +
                         "on ri.refund_reason_type=dic2.dic_code ");
 
-//        result.execute().print();
+        result.execute().print();
 
-//
-//        tableEnv.executeSql("create table stream_dwdTDTable_danyushi(" +
-//                "id string," +
-//                "user_id string," +
-//                "order_id string," +
-//                "sku_id string," +
-//                "province_id string," +
-//                "date_id string," +
-//                "create_time string," +
-//                "refund_type_code string," +
-//                "refund_type_name string," +
-//                "refund_reason_type_code string," +
-//                "refund_reason_type_name string," +
-//                "refund_reason_txt string," +
-//                "refund_num string," +
-//                "refund_amount string," +
-//                "ts bigint " +
-//                ")WITH(\n" +
-//                "'connector' = 'upsert-kafka',\n" +
-//                "'topic' = 'stream_dwdTDTable_danyushi',\n" +
-//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-//                "'key.format' = 'json',\n" +
-//                "'value.format' = 'json'\n" +
-//                ");");
-//
-//
-//
-//        result.executeInsert("stream_dwdTDTable_danyushi");
+
+        tableEnv.executeSql("create table stream_dwdTDTable_danyushi(" +
+                "id string," +
+                "user_id string," +
+                "order_id string," +
+                "sku_id string," +
+                "province_id string," +
+                "date_id string," +
+                "create_time string," +
+                "refund_type_code string," +
+                "refund_type_name string," +
+                "refund_reason_type_code string," +
+                "refund_reason_type_name string," +
+                "refund_reason_txt string," +
+                "refund_num string," +
+                "refund_amount string," +
+                "ts bigint " +
+                ")WITH(\n" +
+                "'connector' = 'upsert-kafka',\n" +
+                "'topic' = 'stream_dwdTDTable_danyushi',\n" +
+                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+                "'key.format' = 'json',\n" +
+                "'value.format' = 'json'\n" +
+                ");");
 
 
 
+        result.executeInsert("stream_dwdTDTable_danyushi");
 
-//        env.execute();
+
+
+
 
     }
 }
