@@ -80,14 +80,15 @@ public class dwsuu {
                     private ValueState<String> lastCartDateState;
 
                     @Override
-                    public void open(Configuration parameters) throws Exception {
+                    public void open(Configuration parameters)  {
                         ValueStateDescriptor<String> valueStateDescriptor
                                 = new ValueStateDescriptor<String>("lastCartDateState", String.class);
                         valueStateDescriptor.enableTimeToLive(StateTtlConfig.newBuilder(Time.days(1)).build());
                         lastCartDateState = getRuntimeContext().getState(valueStateDescriptor);
                     }
+                    @SneakyThrows
                     @Override
-                    public void processElement(JSONObject jsonObj, KeyedProcessFunction<String, JSONObject, JSONObject>.Context ctx, Collector<JSONObject> out) throws Exception {
+                    public void processElement(JSONObject jsonObj, KeyedProcessFunction<String, JSONObject, JSONObject>.Context ctx, Collector<JSONObject> out)  {
                         //从状态中获取上次加购日期
                         String lastCartDate = lastCartDateState.value();
                         //获取当前这次加购日期
@@ -131,7 +132,7 @@ public class dwsuu {
                 },
                 new AllWindowFunction<Long, CartAddUuBean, TimeWindow>() {
                     @Override
-                    public void apply(TimeWindow window, Iterable<Long> values, Collector<CartAddUuBean> out) throws Exception {
+                    public void apply(TimeWindow window, Iterable<Long> values, Collector<CartAddUuBean> out)  {
                         Long cartUUCt = values.iterator().next();
                         String stt = DateFormatUtil.tsToDateTime(window.getStart());
                         String edt = DateFormatUtil.tsToDateTime(window.getEnd());
@@ -150,7 +151,7 @@ public class dwsuu {
 
         aggregateDS.map(new MapFunction<CartAddUuBean, String>() {
             @Override
-            public String map(CartAddUuBean bean) throws Exception {
+            public String map(CartAddUuBean bean)  {
                 SerializeConfig config = new SerializeConfig();
                 config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
                 return JSON.toJSONString(bean, config);

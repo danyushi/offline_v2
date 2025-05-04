@@ -21,10 +21,6 @@ public class Dwdbf {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
 
-        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
-//        dwdRf.print();
-//        env.execute();
-
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
         tableEnv.executeSql("CREATE TABLE topic_db (\n" +
@@ -43,7 +39,7 @@ public class Dwdbf {
                 "    'format' = 'json'\n" +
                 ")");
 
-//        tableEnv.executeSql("select * from topic_db").print();
+        tableEnv.executeSql("select * from topic_db").print();
 
         Table cartInfo = tableEnv.sqlQuery("select\n" +
                 "`after`['id'] as id,\n" +
@@ -58,21 +54,21 @@ public class Dwdbf {
 
         cartInfo.execute().print();
 
-//        tableEnv.executeSql("CREATE TABLE stream_DwdcartTable_danyushi(\n" +
-//                "id string,\n" +
-//                "user_id string,\n" +
-//                "sku_id string,\n" +
-//                "sku_num string,\n" +
-//                "ts_ms string,\n" +
-//                "PRIMARY KEY (id) NOT ENFORCED\n" +
-//                ")WITH(\n" +
-//                "'connector' = 'upsert-kafka',\n" +
-//                "'topic' = 'stream_DwdcartTable_danyushi',\n" +
-//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-//                "'key.format' = 'json',\n" +
-//                "'value.format' = 'json'\n" +
-//                ");");
-//        cartInfo.executeInsert("stream_DwdcartTable_danyushi");
+        tableEnv.executeSql("CREATE TABLE stream_DwdcartTable_danyushi(\n" +
+                "id string,\n" +
+                "user_id string,\n" +
+                "sku_id string,\n" +
+                "sku_num string,\n" +
+                "ts_ms string,\n" +
+                "PRIMARY KEY (id) NOT ENFORCED\n" +
+                ")WITH(\n" +
+                "'connector' = 'upsert-kafka',\n" +
+                "'topic' = 'stream_DwdcartTable_danyushi',\n" +
+                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+                "'key.format' = 'json',\n" +
+                "'value.format' = 'json'\n" +
+                ");");
+        cartInfo.executeInsert("stream_DwdcartTable_danyushi");
 
 
 

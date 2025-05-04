@@ -15,9 +15,9 @@ import java.sql.Connection;
 import java.util.*;
 
 /**
- * @Package com.zsf.retail.v1.realtime.dwd.BaseDbTableProcessFunction
- * @Author zhao.shuai.fei
- * @Date 2025/4/11 11:40
+ * @Package com.sdy.retail.v1.realtime.dwd.function.BaseDbTableProcessFunction
+ * @Author danyu-shi
+ * @Date 2025/4/10 20:38
  * @description:
  */
 public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObject, TableProcessDwd, Tuple2<JSONObject, TableProcessDwd>> {

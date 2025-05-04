@@ -10,6 +10,7 @@ import com.sdy.common.utils.FlinkSinkUtil;
 import com.sdy.retail.v1.realtime.dws.util.CustomStringDeserializationSchema;
 import com.sdy.retail.v1.realtime.dws.util.TradeSkuOrderBean;
 import com.sdy.retail.v1.realtime.dws.util.UserLoginBean;
+import lombok.SneakyThrows;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.connector.kafka.source.KafkaSource;
@@ -43,20 +44,14 @@ import java.util.concurrent.TimeUnit;
  * @description: 1
  */
 public class dwssku2 {
-    public static void main(String[] args) throws Exception {
+    @SneakyThrows
+    public static void main(String[] args){
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
         // 2.检查点相关的设置
         //2.1 开启检查点
         env.enableCheckpointing(5000L, CheckpointingMode.EXACTLY_ONCE);
-        //2.2 设置检查点超时时间
-//        env.getCheckpointConfig().setCheckpointTimeout(60000L);
-        //2.3 设置job取消后检查点是否保留
-//        env.getCheckpointConfig().setExternalizedCheckpointCleanup(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
-        //2.4 设置两个检查点之间最小时间间隔
-//        env.getCheckpointConfig().setMinPauseBetweenCheckpoints(2000L);
-        //2.5 设置重启策略
-        //env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3,3000L));
+
         env.setRestartStrategy(RestartStrategies.failureRateRestart(3, Time.days(30),Time.seconds(3)));
 
         KafkaSource<String> source = KafkaSource.<String>builder()
@@ -72,7 +67,7 @@ public class dwssku2 {
         SingleOutputStreamOperator<JSONObject> jsonObjDS = kafkaStrDS.process(
                 new ProcessFunction<String, JSONObject>() {
                     @Override
-                    public void processElement(String s, ProcessFunction<String, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
+                    public void processElement(String s, ProcessFunction<String, JSONObject>.Context context, Collector<JSONObject> collector){
                         if (s != null) {
                             collector.collect(JSON.parseObject(s));
                         }
@@ -89,15 +84,16 @@ public class dwssku2 {
                     private ValueState<JSONObject> lastJsonObjState;
 
                     @Override
-                    public void open(Configuration parameters) throws Exception {
+                    public void open(Configuration parameters){
                         ValueStateDescriptor<JSONObject> valueStateDescriptor
                                 = new ValueStateDescriptor<JSONObject>("lastJsonObjState", JSONObject.class);
                         valueStateDescriptor.enableTimeToLive(StateTtlConfig.newBuilder(Time.seconds(10)).build());
                         lastJsonObjState = getRuntimeContext().getState(valueStateDescriptor);
                     }
 
+                    @SneakyThrows
                     @Override
-                    public void processElement(JSONObject jsonObj, KeyedProcessFunction<String, JSONObject, JSONObject>.Context ctx, Collector<JSONObject> out) throws Exception {
+                    public void processElement(JSONObject jsonObj, KeyedProcessFunction<String, JSONObject, JSONObject>.Context ctx, Collector<JSONObject> out){
                         //从状态中获取上次接收到的数据
                         JSONObject lastJsonObj = lastJsonObjState.value();
                         if (lastJsonObj != null) {
@@ -137,7 +133,7 @@ public class dwssku2 {
         SingleOutputStreamOperator<TradeSkuOrderBean> beanDS = withWatermarkDS.map(
                 new MapFunction<JSONObject, TradeSkuOrderBean>() {
                     @Override
-                    public TradeSkuOrderBean map(JSONObject jsonObj) throws Exception {
+                    public TradeSkuOrderBean map(JSONObject jsonObj){
                         //{"create_time":"2024-06-11 10:54:40","sku_num":"1","activity_rule_id":"5","split_original_amount":"11999.0000",
                         // "split_coupon_amount":"0.0","sku_id":"19","date_id":"2024-06-11","user_id":"2998","province_id":"32",
                         // "activity_id":"4","sku_name":"TCL","id":"15183","order_id":"10788","split_activity_amount":"1199.9",
@@ -172,7 +168,7 @@ public class dwssku2 {
         SingleOutputStreamOperator<TradeSkuOrderBean> reduceDS = windowDS.reduce(
                 new ReduceFunction<TradeSkuOrderBean>() {
                     @Override
-                    public TradeSkuOrderBean reduce(TradeSkuOrderBean value1, TradeSkuOrderBean value2) throws Exception {
+                    public TradeSkuOrderBean reduce(TradeSkuOrderBean value1, TradeSkuOrderBean value2){
                         value1.setOriginalAmount(value1.getOriginalAmount().add(value2.getOriginalAmount()));
                         value1.setActivityReduceAmount(value1.getActivityReduceAmount().add(value2.getActivityReduceAmount()));
                         value1.setCouponReduceAmount(value1.getCouponReduceAmount().add(value2.getCouponReduceAmount()));
@@ -183,7 +179,7 @@ public class dwssku2 {
                 },
                 new ProcessWindowFunction<TradeSkuOrderBean, TradeSkuOrderBean, String, TimeWindow>() {
                     @Override
-                    public void process(String s, ProcessWindowFunction<TradeSkuOrderBean, TradeSkuOrderBean, String, TimeWindow>.Context context, Iterable<TradeSkuOrderBean> elements, Collector<TradeSkuOrderBean> out) throws Exception {
+                    public void process(String s, ProcessWindowFunction<TradeSkuOrderBean, TradeSkuOrderBean, String, TimeWindow>.Context context, Iterable<TradeSkuOrderBean> elements, Collector<TradeSkuOrderBean> out){
                         TradeSkuOrderBean orderBean = elements.iterator().next();
 //                        System.out.printf("order-->", orderBean);
                         TimeWindow window = context.window();
@@ -342,20 +338,18 @@ public class dwssku2 {
 
         withC1DS.print("======>");
 
-//        SingleOutputStreamOperator<TradeSkuOrderBean> filter = withC1DS.filter(o -> o.getCurDate().equals("2025-04-20"));
 //        filter.print("filter-->");
+
         // 15.将关联的结果写到Doris表中
-
-
-//       withC1DS.map(new MapFunction<TradeSkuOrderBean, String>() {
-//            @Override
-//            public String map(TradeSkuOrderBean bean) throws Exception {
-//                SerializeConfig config = new SerializeConfig();
-//                config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
-//                return JSON.toJSONString(bean, config);
-//            }
-//        } )
-//                .sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_sku_order_window"));
+       withC1DS.map(new MapFunction<TradeSkuOrderBean, String>() {
+            @Override
+            public String map(TradeSkuOrderBean bean){
+                SerializeConfig config = new SerializeConfig();
+                config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
+                return JSON.toJSONString(bean, config);
+            }
+        } )
+                .sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_sku_order_window"));
 
         env.execute();
     }

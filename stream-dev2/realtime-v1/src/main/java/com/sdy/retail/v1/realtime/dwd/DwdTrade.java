@@ -42,7 +42,7 @@ public class DwdTrade {
                 "    'format' = 'json'\n" +
                 ")");
 
-        tableEnv.executeSql("select * from topic_db").print();
+//        tableEnv.executeSql("select * from topic_db").print();
 
 //字典表
         tableEnv.executeSql("CREATE TABLE base_dic (\n" +
@@ -59,7 +59,7 @@ public class DwdTrade {
                 "'table-name'='ns_danyu_shi:dim_base_dic',\n" +
                 "'zookeeper.quorum'='cdh02:2181'\n" +
                 ");");
-                tableEnv.executeSql("select * from base_dic").print();
+//                tableEnv.executeSql("select * from base_dic").print();
 
 
 
@@ -83,7 +83,7 @@ public class DwdTrade {
                         "where `source`['table'] = 'order_refund_info' " +
                         "and op= 'c' ");
 
-        orderRefundInfo.execute().print();
+//        orderRefundInfo.execute().print();
 
         tableEnv.createTemporaryView("order_refund_info", orderRefundInfo);
 
@@ -100,7 +100,7 @@ public class DwdTrade {
                         "and `after`['order_status']='1005' ");
 
 
-        orderInfo.execute().print();
+//        orderInfo.execute().print();
         tableEnv.createTemporaryView("order_info", orderInfo);
 
 
@@ -129,7 +129,7 @@ public class DwdTrade {
                         "join base_dic for system_time as of ri.proc_time as dic2 " +
                         "on ri.refund_reason_type=dic2.dic_code ");
 
-        result.execute().print();
+//        result.execute().print();
 
 
         tableEnv.executeSql("create table stream_dwdTDTable_danyushi(" +
@@ -159,9 +159,6 @@ public class DwdTrade {
 
 
         result.executeInsert("stream_dwdTDTable_danyushi");
-
-
-
 
 
     }

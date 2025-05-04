@@ -56,15 +56,16 @@ public class dwsVcNewPage {
             private ValueState<String> lastVisitDateState;
 
             @Override
-            public void open(Configuration parameters) throws Exception {
+            public void open(Configuration parameters)  {
                 ValueStateDescriptor<String> valueStateDescriptor
                         = new ValueStateDescriptor<String>("lastVisitDateState", String.class);
                 valueStateDescriptor.enableTimeToLive(StateTtlConfig.newBuilder(Time.days(1)).build());
                 lastVisitDateState = getRuntimeContext().getState(valueStateDescriptor);
             }
 
+            @SneakyThrows
             @Override
-            public PageViewTable map(JSONObject jsonObj) throws Exception {
+            public PageViewTable map(JSONObject jsonObj)  {
                 JSONObject commonJsonObj = jsonObj.getJSONObject("common");
                 JSONObject pageJsonObj = jsonObj.getJSONObject("page");
 
@@ -119,7 +120,7 @@ public class dwsVcNewPage {
         KeyedStream<PageViewTable, Tuple4<String, String, String, String>> dimKeyedDS = withWatermarkDS.keyBy(
                 new KeySelector<PageViewTable, Tuple4<String, String, String, String>>() {
                     @Override
-                    public Tuple4<String, String, String, String> getKey(PageViewTable bean) throws Exception {
+                    public Tuple4<String, String, String, String> getKey(PageViewTable bean)  {
                         return Tuple4.of(bean.getVc(),
                                 bean.getCh(),
                                 bean.getAr(),
@@ -138,7 +139,7 @@ public class dwsVcNewPage {
         SingleOutputStreamOperator<PageViewTable> reduceDS = windowDS.reduce(
                 new ReduceFunction<PageViewTable>() {
                     @Override
-                    public PageViewTable reduce(PageViewTable value1, PageViewTable value2) throws Exception {
+                    public PageViewTable reduce(PageViewTable value1, PageViewTable value2)  {
                         value1.setPvCt(value1.getPvCt() + value2.getPvCt());
                         value1.setUvCt(value1.getUvCt() + value2.getUvCt());
                         value1.setSvCt(value1.getSvCt() + value2.getSvCt());
@@ -148,7 +149,7 @@ public class dwsVcNewPage {
                 },
                 new WindowFunction<PageViewTable, PageViewTable, Tuple4<String, String, String, String>, TimeWindow>() {
                     @Override
-                    public void apply(Tuple4<String, String, String, String> stringStringStringStringTuple4, TimeWindow window, Iterable<PageViewTable> input, Collector<PageViewTable> out) throws Exception {
+                    public void apply(Tuple4<String, String, String, String> stringStringStringStringTuple4, TimeWindow window, Iterable<PageViewTable> input, Collector<PageViewTable> out)  {
                         PageViewTable pageViewBean = input.iterator().next();
                         String stt = DateFormatUtil.tsToDateTime(window.getStart());
                         String edt = DateFormatUtil.tsToDateTime(window.getEnd());
@@ -163,17 +164,17 @@ public class dwsVcNewPage {
 //        reduceDS.print();
 
         // 8.将聚合的结果写到Doris表
-//        reduceDS
-//                //在向Doris写数据前，将流中统计的实体类对象转换为json格式字符串
-//                .map(new MapFunction<PageViewTable, String>() {
-//                    @Override
-//                    public String map(PageViewTable bean) throws Exception {
-//                        SerializeConfig config = new SerializeConfig();
-//                        config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
-//                        return JSON.toJSONString(bean, config);
-//                    }
-//                })
-//                .sinkTo(FlinkSinkUtil.getDorisSink("dws_traffic_vc_ch_ar_is_new_page_view_window"));
+        reduceDS
+                //在向Doris写数据前，将流中统计的实体类对象转换为json格式字符串
+                .map(new MapFunction<PageViewTable, String>() {
+                    @Override
+                    public String map(PageViewTable bean)  {
+                        SerializeConfig config = new SerializeConfig();
+                        config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
+                        return JSON.toJSONString(bean, config);
+                    }
+                })
+                .sinkTo(FlinkSinkUtil.getDorisSink("dws_traffic_vc_ch_ar_is_new_page_view_window"));
 
 
 

@@ -62,7 +62,7 @@ public class dwsUserLog {
         SingleOutputStreamOperator<JSONObject> filterDS = jsonObjDS.filter(
                 new FilterFunction<JSONObject>() {
                     @Override
-                    public boolean filter(JSONObject jsonObj) throws Exception {
+                    public boolean filter(JSONObject jsonObj) {
                         String uid = jsonObj.getJSONObject("common").getString("uid");
                         String lastPageId = jsonObj.getJSONObject("page").getString("last_page_id");
                         return StringUtils.isNotEmpty(uid)
@@ -93,14 +93,15 @@ public class dwsUserLog {
                     private ValueState<String> lastLoginDateState;
 
                     @Override
-                    public void open(Configuration parameters) throws Exception {
+                    public void open(Configuration parameters) {
                         ValueStateDescriptor<String> valueStateDescriptor
                                 = new ValueStateDescriptor<String>("lastLoginDateState", String.class);
                         lastLoginDateState = getRuntimeContext().getState(valueStateDescriptor);
                     }
 
+                    @SneakyThrows
                     @Override
-                    public void processElement(JSONObject jsonObj, KeyedProcessFunction<String, JSONObject, UserLoginBean>.Context ctx, Collector<UserLoginBean> out) throws Exception {
+                    public void processElement(JSONObject jsonObj, KeyedProcessFunction<String, JSONObject, UserLoginBean>.Context ctx, Collector<UserLoginBean> out) {
                         //获取上次登录日期
                         String lastLoginDate = lastLoginDateState.value();
                         //获取当前登录日期
@@ -141,7 +142,7 @@ public class dwsUserLog {
         SingleOutputStreamOperator<UserLoginBean> reduceDS = windowDS.reduce(
                 new ReduceFunction<UserLoginBean>() {
                     @Override
-                    public UserLoginBean reduce(UserLoginBean value1, UserLoginBean value2) throws Exception {
+                    public UserLoginBean reduce(UserLoginBean value1, UserLoginBean value2) {
                         value1.setUuCt(value1.getUuCt() + value2.getUuCt());
                         value1.setBackCt(value1.getBackCt() + value2.getBackCt());
                         return value1;
@@ -149,7 +150,7 @@ public class dwsUserLog {
                 },
                 new AllWindowFunction<UserLoginBean, UserLoginBean, TimeWindow>() {
                     @Override
-                    public void apply(TimeWindow window, Iterable<UserLoginBean> values, Collector<UserLoginBean> out) throws Exception {
+                    public void apply(TimeWindow window, Iterable<UserLoginBean> values, Collector<UserLoginBean> out) {
                         UserLoginBean bean = values.iterator().next();
                         String stt = DateFormatUtil.tsToDateTime(window.getStart());
                         String edt = DateFormatUtil.tsToDateTime(window.getEnd());
@@ -167,7 +168,7 @@ public class dwsUserLog {
 //                //在向Doris写数据前，将流中统计的实体类对象转换为json格式字符串
                 .map(new MapFunction<UserLoginBean, String>() {
                     @Override
-                    public String map(UserLoginBean bean) throws Exception {
+                    public String map(UserLoginBean bean) {
                         SerializeConfig config = new SerializeConfig();
                         config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
                         return JSON.toJSONString(bean, config);

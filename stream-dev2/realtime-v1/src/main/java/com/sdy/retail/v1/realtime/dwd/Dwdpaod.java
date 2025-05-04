@@ -45,7 +45,7 @@ public class Dwdpaod {
                 "    'format' = 'json'\n" +
                 ")");
 
-//                tableEnv.executeSql("select * from topic_db").print();
+                tableEnv.executeSql("select * from topic_db").print();
 
 //        订单表
         Table detailINfo = tableEnv.sqlQuery("select \n" +
@@ -68,7 +68,7 @@ public class Dwdpaod {
         tableEnv.createTemporaryView("detailINfo",detailINfo);
 
 //
-//        detailINfo.execute().print();
+        detailINfo.execute().print();
 
 //         定单明细
         Table orderinfo = tableEnv.sqlQuery("select \n" +
@@ -77,7 +77,7 @@ public class Dwdpaod {
                 "`after`['province_id'] province_id\n" +
                 "from topic_db \n" +
                 "where `source`['table'] = 'order_info';");
-//        orderinfo.execute().print();
+        orderinfo.execute().print();
         tableEnv.createTemporaryView("orderinfo",orderinfo);
 
 //        订单明细活动
@@ -88,7 +88,7 @@ public class Dwdpaod {
                 "`after`['activity_rule_id'] activity_rule_id\n" +
                 "from topic_db \n" +
                 "where `source`['table'] = 'order_detail_activity'");
-//        actINfo.execute().print();
+        actINfo.execute().print();
 
 
         tableEnv.createTemporaryView("actINfo",actINfo);
@@ -99,7 +99,7 @@ public class Dwdpaod {
                 "`after`['coupon_id'] coupon_id \n" +
                 "from topic_db \n" +
                 "where `source`['table'] = 'order_detail_coupon';");
-//        coupInfo.execute().print();
+        coupInfo.execute().print();
         tableEnv.createTemporaryView("coupInfo",coupInfo);
 
 
@@ -130,35 +130,35 @@ public class Dwdpaod {
                         "on od.id=cou.order_detail_id ");
         result.execute().print();
 
-//        tableEnv.executeSql("CREATE TABLE stream_DwdXDTable_danyushi(\n" +
-//                "id string," +
-//                "order_id string," +
-//                "user_id string," +
-//                "sku_id string," +
-//                "sku_name string," +
-//                "province_id string," +
-//                "activity_id string," +
-//                "activity_rule_id string," +
-//                "coupon_id string," +
-//                "date_id string," +
-//                "create_time string," +
-//                "sku_num string," +
-//                "split_original_amount string," +
-//                "split_activity_amount string," +
-//                "split_coupon_amount string," +
-//                "split_total_amount string," +
-//                "ts_ms bigint," +
-//                "primary key(id) not enforced " +
-//                ")WITH(\n" +
-//                "'connector' = 'upsert-kafka',\n" +
-//                "'topic' = 'stream_DwdXDTable_danyushi',\n" +
-//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-//                "'key.format' = 'json',\n" +
-//                "'value.format' = 'json'\n" +
-//                ");");
-//
-//
-//        result.executeInsert("stream_DwdXDTable_danyushi");
+        tableEnv.executeSql("CREATE TABLE stream_DwdXDTable_danyushi(\n" +
+                "id string," +
+                "order_id string," +
+                "user_id string," +
+                "sku_id string," +
+                "sku_name string," +
+                "province_id string," +
+                "activity_id string," +
+                "activity_rule_id string," +
+                "coupon_id string," +
+                "date_id string," +
+                "create_time string," +
+                "sku_num string," +
+                "split_original_amount string," +
+                "split_activity_amount string," +
+                "split_coupon_amount string," +
+                "split_total_amount string," +
+                "ts_ms bigint," +
+                "primary key(id) not enforced " +
+                ")WITH(\n" +
+                "'connector' = 'upsert-kafka',\n" +
+                "'topic' = 'stream_DwdXDTable_danyushi',\n" +
+                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+                "'key.format' = 'json',\n" +
+                "'value.format' = 'json'\n" +
+                ");");
+
+
+        result.executeInsert("stream_DwdXDTable_danyushi");
 
 
 //        env.execute();

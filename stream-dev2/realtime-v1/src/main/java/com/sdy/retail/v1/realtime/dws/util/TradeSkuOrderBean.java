@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * @Package com.zsf.realtime.common.bean.TradeSkuOrderBean
- * @Author zhao.shuai.fei
- * @Date 2025/4/15 20:32
+ * @Package com.sdy.retail.v1.realtime.dws.util.TradeSkuOrderBean
+ * @Author danyu-shi
+ * @Date 2025/4/10 20:38
  * @description:
  */
 @Data

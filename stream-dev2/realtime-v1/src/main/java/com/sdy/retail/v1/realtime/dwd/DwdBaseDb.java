@@ -57,16 +57,17 @@ public class DwdBaseDb {
                 }
             }
         });
-//        SingleOutputStreamOperator<JSONObject> dbObjDS = dbObjDS1.filter(new FilterFunction<JSONObject>() {
-//            @Override
-//            public boolean filter(JSONObject jsonObject) throws Exception {
-//                String string = jsonObject.getJSONObject("source").getString("table");
-//                if ("user_info".equals(string)) {
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
+
+        SingleOutputStreamOperator<JSONObject> dbObjDS = dbObjDS1.filter(new FilterFunction<JSONObject>() {
+            @Override
+            public boolean filter(JSONObject jsonObject) throws Exception {
+                String string = jsonObject.getJSONObject("source").getString("table");
+                if ("user_info".equals(string)) {
+                    return true;
+                }
+                return false;
+            }
+        });
 
         //读取配置表信息
         Properties properties = new Properties();
@@ -92,11 +93,6 @@ public class DwdBaseDb {
                 new MapFunction<String, TableProcessDwd>() {
                     @Override
                     public TableProcessDwd map(String jsonStr) throws Exception {
-                        //"op":"r": {"before":null,"after":{"source_table":"activity_info","sink_table":"dim_activity_info","sink_family":"info","sink_columns":"id,activity_name,activity_type,activity_desc,start_time,end_time,create_time","sink_row_key":"id"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":0,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":0,"gtid":null,"file":"","pos":0,"row":0,"thread":null,"query":null},"op":"r","ts_ms":1716812196180,"transaction":null}
-                        //"op":"c": {"before":null,"after":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaa","sink_row_key":"aa"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812267000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11423611,"row":0,"thread":14,"query":null},"op":"c","ts_ms":1716812265698,"transaction":null}
-                        //"op":"u": {"before":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaa","sink_row_key":"aa"},"after":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaabbb","sink_row_key":"aa"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812311000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11423960,"row":0,"thread":14,"query":null},"op":"u","ts_ms":1716812310215,"transaction":null}
-                        //"op":"d": {"before":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaabbb","sink_row_key":"aa"},"after":null,"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812341000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11424323,"row":0,"thread":14,"query":null},"op":"d","ts_ms":1716812340475,"transaction":null}
-
                         //为了处理方便，先将jsonStr转换为jsonObj
                         JSONObject jsonObj = JSON.parseObject(jsonStr);
                         //获取操作类型

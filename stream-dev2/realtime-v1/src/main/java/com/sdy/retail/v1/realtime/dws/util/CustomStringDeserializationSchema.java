@@ -6,9 +6,9 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import java.io.IOException;
 
 /**
- * @Package com.jiao.dws.function.CustomStringDeserializationSchema
- * @Author Chen.Run.ze
- * @Date 2025/4/17 8:35
+ * @Package com.sdy.retail.v1.realtime.dws.util.CustomStringDeserializationSchema
+ * @Author danyu-shi
+ * @Date 2025/4/10 20:38
  * @description:
  */
 public class CustomStringDeserializationSchema  implements DeserializationSchema<String> {

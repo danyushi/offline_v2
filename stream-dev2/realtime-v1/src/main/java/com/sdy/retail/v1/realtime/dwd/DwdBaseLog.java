@@ -10,6 +10,7 @@ import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SideOutputDataStream;
@@ -57,10 +58,10 @@ public class DwdBaseLog {
                 }
         );
 //        jsonObjDS.print("标准数据--->");
-//        SideOutputDataStream<String> dirtyDS = jsonObjDS.getSideOutput(dirtyTag);
+        SideOutputDataStream<String> dirtyDS = jsonObjDS.getSideOutput(dirtyTag);
 //        dirtyDS.print("脏数据---->");
 
-//        KafkaSink<String> sink = KafkaUtil.getKafkaSink("stream-dwdlog-danyushi");
+        KafkaSink<String> sink = KafkaUtil.getKafkaSink("stream-dwdlog-danyushi");
 //        dirtyDS.sinkTo(sink);
 
 
@@ -114,7 +115,7 @@ public class DwdBaseLog {
                     }
                 }
         );
-//        fixedDS.print();
+        fixedDS.print();
         OutputTag<String> errTag = new OutputTag<String>("errTag"){};
         OutputTag<String> startTag = new OutputTag<String>("startTag") {};
         OutputTag<String> displayTag = new OutputTag<String>("displayTag") {};

@@ -111,10 +111,6 @@ public class dwsPage {
 
         result.executeInsert("dws_traffic_source_keyword_page_view_window");
 
-
-
-
-
 //        env.execute();
 
     }

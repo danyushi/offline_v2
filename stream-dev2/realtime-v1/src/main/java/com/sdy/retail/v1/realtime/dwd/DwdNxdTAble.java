@@ -1,8 +1,6 @@
 package com.sdy.retail.v1.realtime.dwd;
 
-import com.sdy.common.utils.KafkaUtil;
 import lombok.SneakyThrows;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -20,11 +18,6 @@ public class DwdNxdTAble {
     public static void main(String[] args) {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
-
-//        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
-//        dwdRf.print();
-////
-//        env.execute();
 
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
         tableEnv.getConfig().setIdleStateRetention(Duration.ofSeconds(30 * 60 + 5));
@@ -45,7 +38,7 @@ public class DwdNxdTAble {
                 "    'format' = 'json'\n" +
                 ")");
 
-//                tableEnv.executeSql("select * from topic_db").print();
+                tableEnv.executeSql("select * from topic_db").print();
 
         tableEnv.executeSql("CREATE TABLE DwdXDTable (\n" +
                 "id string," +
@@ -121,42 +114,37 @@ public class DwdNxdTAble {
         result.execute().print();
 
 
-//                tableEnv.executeSql(
-//                        "create table stream_DwdNXDTable_danyushi(" +
-//                                "id string," +
-//                                "order_id string," +
-//                                "user_id string," +
-//                                "sku_id string," +
-//                                "sku_name string," +
-//                                "province_id string," +
-//                                "activity_id string," +
-//                                "activity_rule_id string," +
-//                                "coupon_id string," +
-//                                "date_id string," +
-//                                "cancel_time string," +
-//                                "sku_num string," +
-//                                "split_original_amount string," +
-//                                "split_activity_amount string," +
-//                                "split_coupon_amount string," +
-//                                "split_total_amount string," +
-//                                "ts_ms BIGINT " +
-//                "primary key(id) not enforced " +
-//                ")WITH(\n" +
-//                "'connector' = 'upsert-kafka',\n" +
-//                "'topic' = 'stream_DwdNXDTable_danyushi',\n" +
-//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-//                "'key.format' = 'json',\n" +
-//                "'value.format' = 'json'\n" +
-//                ");");
-//
-//
-//
-//        result.executeInsert("stream_DwdNXDTable_danyushi");
+                tableEnv.executeSql(
+                        "create table stream_DwdNXDTable_danyushi(" +
+                                "id string," +
+                                "order_id string," +
+                                "user_id string," +
+                                "sku_id string," +
+                                "sku_name string," +
+                                "province_id string," +
+                                "activity_id string," +
+                                "activity_rule_id string," +
+                                "coupon_id string," +
+                                "date_id string," +
+                                "cancel_time string," +
+                                "sku_num string," +
+                                "split_original_amount string," +
+                                "split_activity_amount string," +
+                                "split_coupon_amount string," +
+                                "split_total_amount string," +
+                                "ts_ms BIGINT " +
+                "primary key(id) not enforced " +
+                ")WITH(\n" +
+                "'connector' = 'upsert-kafka',\n" +
+                "'topic' = 'stream_DwdNXDTable_danyushi',\n" +
+                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+                "'key.format' = 'json',\n" +
+                "'value.format' = 'json'\n" +
+                ");");
 
 
 
-
-//                env.execute();
+        result.executeInsert("stream_DwdNXDTable_danyushi");
 
 
     }

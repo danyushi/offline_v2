@@ -7,6 +7,8 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
+import java.time.Duration;
+
 /**
  * @Package com.sdy.retail.v1.realtime.dwd.DwdTDPaySucTable
  * @Author danyu-shi
@@ -21,13 +23,13 @@ public class DwdTDPaySucTable {
         env.setParallelism(1);
 
 
-//        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
-//        dwdRf.print();
-//
+        DataStreamSource<String> dwdRf = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "dwd_rf");
+        dwdRf.print();
+
 //        env.execute();
 
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
-//        tableEnv.getConfig().setIdleStateRetention(Duration.ofSeconds(30 * 60 + 5));
+        tableEnv.getConfig().setIdleStateRetention(Duration.ofSeconds(30 * 60 + 5));
 
         tableEnv.executeSql("CREATE TABLE topic_db (\n" +
                 "    `before` MAP<STRING, STRING>,\n" +
@@ -47,7 +49,7 @@ public class DwdTDPaySucTable {
                 "    'format' = 'json'\n" +
                 ")");
 
-//        tableEnv.executeSql("select * from topic_db").print();
+        tableEnv.executeSql("select * from topic_db").print();
 
 //字典表
         tableEnv.executeSql("CREATE TABLE base_dic (\n" +
@@ -64,7 +66,7 @@ public class DwdTDPaySucTable {
                 "'table-name'='ns_danyu_shi:dim_base_dic',\n" +
                 "'zookeeper.quorum'='cdh02:2181'\n" +
                 ");");
-        //        tableEnv.executeSql("select * from base_dic").print();
+                tableEnv.executeSql("select * from base_dic").print();
         // 3. 过滤退款成功表数据
         Table refundPayment  = tableEnv.sqlQuery(
                 "select " +
@@ -82,7 +84,7 @@ public class DwdTDPaySucTable {
                         "and `before`['refund_status'] is not null " +
                         "and `after`['refund_status']='1602' " );
         tableEnv.createTemporaryView("refund_payment", refundPayment);
-//        refundPayment.execute().print();
+        refundPayment.execute().print();
 
 
         // 4. 过滤退单表中的退单成功的数据
@@ -97,7 +99,7 @@ public class DwdTDPaySucTable {
                         "and `before`['refund_status'] is not null " +
                         "and `after`['refund_status']='0705'");
         tableEnv.createTemporaryView("order_refund_info", orderRefundInfo);
-//        orderRefundInfo.execute().print();
+        orderRefundInfo.execute().print();
 
         // 5. 过滤订单表中的退款成功的数据
         Table orderInfo = tableEnv.sqlQuery(
@@ -111,7 +113,7 @@ public class DwdTDPaySucTable {
                         "and `before`['order_status'] is not null " +
                         "and `after`['order_status']='1006'");
         tableEnv.createTemporaryView("order_info", orderInfo);
-//        orderInfo.execute().print();
+        orderInfo.execute().print();
 
 
 // 6. 4 张表的 join
@@ -139,30 +141,30 @@ public class DwdTDPaySucTable {
         result.execute().print();
 
 
-//        tableEnv.executeSql("create table stream_dwdTDpaysucTable_danyushi(" +
-//                 "id string," +
-//                 "user_id string," +
-//                 "order_id string," +
-//                 "sku_id string," +
-//                 "province_id string," +
-//                 "payment_type_code string," +
-//                 "payment_type_name string," +
-//                 "date_id string," +
-//                 "callback_time string," +
-//                 "refund_num string," +
-//                 "refund_amount string," +
-//                 "ts bigint " +
-//                 ")WITH(\n" +
-//                "'connector' = 'upsert-kafka',\n" +
-//                "'topic' = 'stream_dwdTDpaysucTable_danyushi',\n" +
-//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-//                "'key.format' = 'json',\n" +
-//                "'value.format' = 'json'\n" +
-//                ");");
-//
-//
-//
-//        result.executeInsert("stream_dwdTDpaysucTable_danyushi");
+        tableEnv.executeSql("create table stream_dwdTDpaysucTable_danyushi(" +
+                 "id string," +
+                 "user_id string," +
+                 "order_id string," +
+                 "sku_id string," +
+                 "province_id string," +
+                 "payment_type_code string," +
+                 "payment_type_name string," +
+                 "date_id string," +
+                 "callback_time string," +
+                 "refund_num string," +
+                 "refund_amount string," +
+                 "ts bigint " +
+                 ")WITH(\n" +
+                "'connector' = 'upsert-kafka',\n" +
+                "'topic' = 'stream_dwdTDpaysucTable_danyushi',\n" +
+                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+                "'key.format' = 'json',\n" +
+                "'value.format' = 'json'\n" +
+                ");");
+
+
+
+        result.executeInsert("stream_dwdTDpaysucTable_danyushi");
 
 
 
