@@ -96,26 +96,26 @@ public class Dwdrf {
 
         CommdicTable.execute().print();
 
-        tableEnv.executeSql("CREATE TABLE stream_DwdCommdicTable_danyushi(\n" +
-                "id string,\n" +
-                "user_id string,\n" +
-                "sku_id string,\n" +
-                "appraise string,\n" +
-                "appraise_name string,\n" +
-                "comment_txt string,\n" +
-                "op string,\n" +
-                "ts_ms string,\n" +
-                "PRIMARY KEY (id) NOT ENFORCED\n" +
-                ")WITH(\n" +
-                "'connector' = 'upsert-kafka',\n" +
-                "'topic' = 'stream_DwdCommdicTable_danyushi',\n" +
-                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-                "'key.format' = 'json',\n" +
-                "'value.format' = 'json'\n" +
-                ");");
-
-
-        CommdicTable.executeInsert("stream_DwdCommdicTable_danyushi");
+//        tableEnv.executeSql("CREATE TABLE stream_DwdCommdicTable_danyushi(\n" +
+//                "id string,\n" +
+//                "user_id string,\n" +
+//                "sku_id string,\n" +
+//                "appraise string,\n" +
+//                "appraise_name string,\n" +
+//                "comment_txt string,\n" +
+//                "op string,\n" +
+//                "ts_ms string,\n" +
+//                "PRIMARY KEY (id) NOT ENFORCED\n" +
+//                ")WITH(\n" +
+//                "'connector' = 'upsert-kafka',\n" +
+//                "'topic' = 'stream_DwdCommdicTable_danyushi',\n" +
+//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+//                "'key.format' = 'json',\n" +
+//                "'value.format' = 'json'\n" +
+//                ");");
+//
+//
+//        CommdicTable.executeInsert("stream_DwdCommdicTable_danyushi");
 
 
     }

@@ -141,30 +141,30 @@ public class DwdTDPaySucTable {
         result.execute().print();
 
 
-        tableEnv.executeSql("create table stream_dwdTDpaysucTable_danyushi(" +
-                 "id string," +
-                 "user_id string," +
-                 "order_id string," +
-                 "sku_id string," +
-                 "province_id string," +
-                 "payment_type_code string," +
-                 "payment_type_name string," +
-                 "date_id string," +
-                 "callback_time string," +
-                 "refund_num string," +
-                 "refund_amount string," +
-                 "ts bigint " +
-                 ")WITH(\n" +
-                "'connector' = 'upsert-kafka',\n" +
-                "'topic' = 'stream_dwdTDpaysucTable_danyushi',\n" +
-                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-                "'key.format' = 'json',\n" +
-                "'value.format' = 'json'\n" +
-                ");");
-
-
-
-        result.executeInsert("stream_dwdTDpaysucTable_danyushi");
+//        tableEnv.executeSql("create table stream_dwdTDpaysucTable_danyushi(" +
+//                 "id string," +
+//                 "user_id string," +
+//                 "order_id string," +
+//                 "sku_id string," +
+//                 "province_id string," +
+//                 "payment_type_code string," +
+//                 "payment_type_name string," +
+//                 "date_id string," +
+//                 "callback_time string," +
+//                 "refund_num string," +
+//                 "refund_amount string," +
+//                 "ts bigint " +
+//                 ")WITH(\n" +
+//                "'connector' = 'upsert-kafka',\n" +
+//                "'topic' = 'stream_dwdTDpaysucTable_danyushi',\n" +
+//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+//                "'key.format' = 'json',\n" +
+//                "'value.format' = 'json'\n" +
+//                ");");
+//
+//
+//
+//        result.executeInsert("stream_dwdTDpaysucTable_danyushi");
 
 
 

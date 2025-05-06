@@ -129,36 +129,36 @@ public class DwdTrade {
                         "join base_dic for system_time as of ri.proc_time as dic2 " +
                         "on ri.refund_reason_type=dic2.dic_code ");
 
-//        result.execute().print();
+        result.execute().print();
 
 
-        tableEnv.executeSql("create table stream_dwdTDTable_danyushi(" +
-                "id string," +
-                "user_id string," +
-                "order_id string," +
-                "sku_id string," +
-                "province_id string," +
-                "date_id string," +
-                "create_time string," +
-                "refund_type_code string," +
-                "refund_type_name string," +
-                "refund_reason_type_code string," +
-                "refund_reason_type_name string," +
-                "refund_reason_txt string," +
-                "refund_num string," +
-                "refund_amount string," +
-                "ts bigint " +
-                ")WITH(\n" +
-                "'connector' = 'upsert-kafka',\n" +
-                "'topic' = 'stream_dwdTDTable_danyushi',\n" +
-                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-                "'key.format' = 'json',\n" +
-                "'value.format' = 'json'\n" +
-                ");");
-
-
-
-        result.executeInsert("stream_dwdTDTable_danyushi");
+//        tableEnv.executeSql("create table stream_dwdTDTable_danyushi(" +
+//                "id string," +
+//                "user_id string," +
+//                "order_id string," +
+//                "sku_id string," +
+//                "province_id string," +
+//                "date_id string," +
+//                "create_time string," +
+//                "refund_type_code string," +
+//                "refund_type_name string," +
+//                "refund_reason_type_code string," +
+//                "refund_reason_type_name string," +
+//                "refund_reason_txt string," +
+//                "refund_num string," +
+//                "refund_amount string," +
+//                "ts bigint " +
+//                ")WITH(\n" +
+//                "'connector' = 'upsert-kafka',\n" +
+//                "'topic' = 'stream_dwdTDTable_danyushi',\n" +
+//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+//                "'key.format' = 'json',\n" +
+//                "'value.format' = 'json'\n" +
+//                ");");
+//
+//
+//
+//        result.executeInsert("stream_dwdTDTable_danyushi");
 
 
     }

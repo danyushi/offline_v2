@@ -338,7 +338,6 @@ public class dwssku2 {
 
         withC1DS.print("======>");
 
-//        filter.print("filter-->");
 
         // 15.将关联的结果写到Doris表中
        withC1DS.map(new MapFunction<TradeSkuOrderBean, String>() {

@@ -36,12 +36,12 @@ public class flinkcdc {
                 .hostname("10.160.60.17")
                 .port(3306)
                 .databaseList("realtime_v1") // 设置捕获的数据库， 如果需要同步整个数据库，请将 tableList 设置为 ".*".
-                .tableList("realtime_v1.order_refund_info") // 设置捕获的表
-//                 .tableList("gmall_v1_danyu_shi.*") // 设置捕获的表
+//                .tableList("realtime_v1.order_refund_info") // 设置捕获的表
+                 .tableList("realtime_v1.*") // 设置捕获的表
                 .username("root")
                 .password("Zh1028,./")
-//                .startupOptions(StartupOptions.initial())  // 从最早位点启动
-               .startupOptions(StartupOptions.latest()) // 从最晚位点启动
+                .startupOptions(StartupOptions.initial())  // 从最早位点启动
+//               .startupOptions(StartupOptions.latest()) // 从最晚位点启动
                 .debeziumProperties(prop)
                 .deserializer(new JsonDebeziumDeserializationSchema()) // 将 SourceRecord 转换为 JSON 字符串
                 .build();

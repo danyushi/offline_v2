@@ -130,35 +130,35 @@ public class Dwdpaod {
                         "on od.id=cou.order_detail_id ");
         result.execute().print();
 
-        tableEnv.executeSql("CREATE TABLE stream_DwdXDTable_danyushi(\n" +
-                "id string," +
-                "order_id string," +
-                "user_id string," +
-                "sku_id string," +
-                "sku_name string," +
-                "province_id string," +
-                "activity_id string," +
-                "activity_rule_id string," +
-                "coupon_id string," +
-                "date_id string," +
-                "create_time string," +
-                "sku_num string," +
-                "split_original_amount string," +
-                "split_activity_amount string," +
-                "split_coupon_amount string," +
-                "split_total_amount string," +
-                "ts_ms bigint," +
-                "primary key(id) not enforced " +
-                ")WITH(\n" +
-                "'connector' = 'upsert-kafka',\n" +
-                "'topic' = 'stream_DwdXDTable_danyushi',\n" +
-                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
-                "'key.format' = 'json',\n" +
-                "'value.format' = 'json'\n" +
-                ");");
-
-
-        result.executeInsert("stream_DwdXDTable_danyushi");
+//        tableEnv.executeSql("CREATE TABLE stream_DwdXDTable_danyushi(\n" +
+//                "id string," +
+//                "order_id string," +
+//                "user_id string," +
+//                "sku_id string," +
+//                "sku_name string," +
+//                "province_id string," +
+//                "activity_id string," +
+//                "activity_rule_id string," +
+//                "coupon_id string," +
+//                "date_id string," +
+//                "create_time string," +
+//                "sku_num string," +
+//                "split_original_amount string," +
+//                "split_activity_amount string," +
+//                "split_coupon_amount string," +
+//                "split_total_amount string," +
+//                "ts_ms bigint," +
+//                "primary key(id) not enforced " +
+//                ")WITH(\n" +
+//                "'connector' = 'upsert-kafka',\n" +
+//                "'topic' = 'stream_DwdXDTable_danyushi',\n" +
+//                "'properties.bootstrap.servers' = 'cdh02:9092',\n" +
+//                "'key.format' = 'json',\n" +
+//                "'value.format' = 'json'\n" +
+//                ");");
+//
+//
+//        result.executeInsert("stream_DwdXDTable_danyushi");
 
 
 //        env.execute();

@@ -234,15 +234,15 @@ public class dwsProvinceOrde {
         });
         withC1DS.print();
 
-        withC1DS.map(new MapFunction<TradeProvinceOrderBean, String>() {
-                    @Override
-                    public String map(TradeProvinceOrderBean bean) throws Exception {
-                        SerializeConfig config = new SerializeConfig();
-                        config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
-                        return JSON.toJSONString(bean, config);
-                    }
-                } )
-                .sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_province_order_window"));
+//        withC1DS.map(new MapFunction<TradeProvinceOrderBean, String>() {
+//                    @Override
+//                    public String map(TradeProvinceOrderBean bean) throws Exception {
+//                        SerializeConfig config = new SerializeConfig();
+//                        config.setPropertyNamingStrategy(PropertyNamingStrategy.SnakeCase);
+//                        return JSON.toJSONString(bean, config);
+//                    }
+//                } )
+//                .sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_province_order_window"));
         env.execute();
     }
 }
