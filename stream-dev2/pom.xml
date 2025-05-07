@@ -11,7 +11,9 @@
     <modules>
         <module>realtime-v1</module>
         <module>realtime-common</module>
-<!--        <module>realtime-publishe</module>-->
+        <module>stream-realtime</module>
+        <module>stream-common</module>
+        <!--        <module>realtime-publishe</module>-->
     </modules>
 
     <properties>
