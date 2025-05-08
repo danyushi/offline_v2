@@ -4,8 +4,8 @@ import static com.sdy.utils.SiliconFlowApi.generateBadReview;
 
 /**
  * @Package com.stream.utils.CommonGenerateTempLate
- * @Author zhou.han
- * @Date 2025/3/16 19:43
+ * @Author danyu-shi
+ * @Date 2025/5/8 8:46
  * @description: TempLate
  */
 public class CommonGenerateTempLate {
@@ -14,18 +14,18 @@ public class CommonGenerateTempLate {
 
     private static final String COMMENT = "差评";
 
-    private static final String API_TOKEN = ConfigUtils.getString("silicon.api.token");
+//    private static final String API_TOKEN = ConfigUtils.getString("silicon.api.token");
 
     public static String GenerateComment(String comment,String productName){
         if (comment.equals(COMMENT)){
             return generateBadReview(
                     String.format(COMMENT_TEMPLATE,COMMENT, productName, "攻击性拉满,使用脏话"),
-                    API_TOKEN
+                    "API_TOKEN"
             );
         }
         return generateBadReview(
                 String.format(COMMENT_TEMPLATE,COMMENT, productName,""),
-                API_TOKEN
+                "API_TOKEN"
         );
     }
 

@@ -9,8 +9,8 @@ import java.util.Random;
 
 /**
  * @Package com.stream.utils.SensitiveWordsUtils
- * @Author zhou.han
- * @Date 2025/3/16 21:58
+ * @Author danyu-shi
+ * @Date 2025/5/8 8:46
  * @description: sensitive words
  */
 public class SensitiveWordsUtils {

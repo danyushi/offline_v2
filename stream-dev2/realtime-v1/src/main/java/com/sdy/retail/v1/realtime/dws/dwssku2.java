@@ -220,7 +220,7 @@ public class dwssku2 {
         );
 
 //        withSkuInfoDS.print();
-        // 10.关联spu维度
+//         10.关联spu维度
         SingleOutputStreamOperator<TradeSkuOrderBean> withSpuInfoDS = AsyncDataStream.unorderedWait(
                 withSkuInfoDS,
                 new DimAsyncFunction<TradeSkuOrderBean>() {
@@ -243,7 +243,7 @@ public class dwssku2 {
                 TimeUnit.SECONDS
         );
 //        withSpuInfoDS.print();
-        // 11.关联tm维度
+//         11.关联tm维度
         SingleOutputStreamOperator<TradeSkuOrderBean> withTmDS = AsyncDataStream.unorderedWait(
                 withSpuInfoDS,
                 new DimAsyncFunction<TradeSkuOrderBean>() {
@@ -336,7 +336,7 @@ public class dwssku2 {
                 TimeUnit.SECONDS
         );
 
-        withC1DS.print("======>");
+//        withC1DS.print("======>");
 
 
         // 15.将关联的结果写到Doris表中

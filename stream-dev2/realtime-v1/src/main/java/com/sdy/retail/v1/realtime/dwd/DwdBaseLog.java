@@ -52,8 +52,6 @@ public class DwdBaseLog {
                         } catch (Exception e) {
                             context.output(dirtyTag, jsonstr);
                         }
-
-
                     }
                 }
         );

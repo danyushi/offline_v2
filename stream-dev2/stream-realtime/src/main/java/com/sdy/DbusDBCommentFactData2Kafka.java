@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sdy.common.domain.Constant;
 import com.sdy.func.AsyncHbaseDimBaseDicFunc;
-import com.sdy.func.IntervalJoinOrderCommentAndOrderInfoFunc;
 
+import com.sdy.func.IntervalJoinOrderCommentAndOrderInfoFunc;
 import com.sdy.utils.CommonGenerateTempLate;
 import com.sdy.utils.DateTimeUtils;
 import com.sdy.utils.KafkaUtils;
@@ -60,6 +60,7 @@ public class DbusDBCommentFactData2Kafka {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 //        EnvironmentSettingUtils.defaultParameter(env);
+        env.setParallelism(10);
 
         // 评论表 取数
         SingleOutputStreamOperator<String> kafkaCdcDbSource = env.fromSource(
@@ -163,32 +164,30 @@ public class DbusDBCommentFactData2Kafka {
 
 //        orderInfoMapDs.print();
 
-
-//        // orderCommentMap.order_id join orderInfoMapDs.id
+        // orderCommentMap.order_id join orderInfoMapDs.id
         KeyedStream<JSONObject, String> keyedOrderCommentStream = orderCommentMap.keyBy(data -> data.getString("order_id"));
         KeyedStream<JSONObject, String> keyedOrderInfoStream = orderInfoMapDs.keyBy(data -> data.getString("id"));
 
+        // {"info_original_total_amount":"56092.00","info_activity_reduce_amount":"1199.90","commentTxt":"评论内容：52198813817222113474133821791377912858419193882331","info_province_id":8,"info_payment_way":"3501","info_create_time":1746624020000,"info_refundable_time":1747228820000,"info_order_status":"1002","id":84,"spu_id":3,"table":"comment_info","info_tm_ms":1746596796189,"info_operate_time":1746624052000,"op":"c","create_time":1746624077000,"info_user_id":178,"info_op":"u","info_trade_body":"Apple iPhone 12 (A2404) 64GB 白色 支持移动联通电信5G 双卡双待手机等6件商品","sku_id":11,"server_id":"1","dic_name":"好评","info_consignee_tel":"13316189177","info_total_amount":"54892.10","info_out_trade_no":"692358523797933","appraise":"1201","user_id":178,"info_id":1010,"info_coupon_reduce_amount":"0.00","order_id":1010,"info_consignee":"彭永","ts_ms":1746596796318,"db":"realtime_v1"}
         SingleOutputStreamOperator<JSONObject> orderMsgAllDs = keyedOrderCommentStream.intervalJoin(keyedOrderInfoStream)
                 .between(Time.minutes(-1), Time.minutes(1))
                 .process(new IntervalJoinOrderCommentAndOrderInfoFunc())
                 .uid("interval_join_order_comment_and_order_info_func").name("interval_join_order_comment_and_order_info_func");
+
 //        orderMsgAllDs.print();
-
-
-
-      // 通过AI 生成评论数据，`Deepseek 7B` 模型即可
-//        SingleOutputStreamOperator<JSONObject> supplementDataMap = orderMsgAllDs.map(new RichMapFunction<JSONObject, JSONObject>() {
-//            @Override
-//            public JSONObject map(JSONObject jsonObject) {
-//                jsonObject.put("commentTxt", CommonGenerateTempLate.GenerateComment(jsonObject.getString("dic_name"), jsonObject.getString("info_trade_body")));
-//                return jsonObject;
-//            }
-//        }).uid("map-generate_comment").name("map-generate_comment");
+        // 通过AI 生成评论数据，`Deepseek 7B` 模型即可
+//         {"info_original_total_amount":"1299.00","info_activity_reduce_amount":"0.00","commentTxt":"\n\n这款Redmi 10X虽然价格亲民，但续航能力一般且相机效果平平，在同类产品中竞争力不足。","info_province_id":32,"info_payment_way":"3501","info_create_time":1746566254000,"info_refundable_time":1747171054000,"info_order_status":"1004","id":75,"spu_id":2,"table":"comment_info","info_tm_ms":1746518021300,"info_operate_time":1746563573000,"op":"c","create_time":1746563573000,"info_user_id":149,"info_op":"u","info_trade_body":"Redmi 10X 4G Helio G85游戏芯 4800万超清四摄 5020mAh大电量 小孔全面屏 128GB大存储 8GB+128GB 明月灰 游戏智能手机 小米 红米等1件商品","sku_id":7,"server_id":"1","dic_name":"好评","info_consignee_tel":"13144335624","info_total_amount":"1299.00","info_out_trade_no":"199223184973112","appraise":"1201","user_id":149,"info_id":327,"info_coupon_reduce_amount":"0.00","order_id":327,"info_consignee":"范琳","ts_ms":1746518021294,"db":"realtime_v1"}
+        SingleOutputStreamOperator<JSONObject> supplementDataMap = orderMsgAllDs.map(new RichMapFunction<JSONObject, JSONObject>() {
+            @Override
+            public JSONObject map(JSONObject jsonObject) {
+                jsonObject.put("commentTxt", CommonGenerateTempLate.GenerateComment(jsonObject.getString("dic_name"), jsonObject.getString("info_trade_body")));
+                return jsonObject;
+            }
+        }).uid("map-generate_comment").name("map-generate_comment");
 
 //        supplementDataMap.print();
-
 //
-        SingleOutputStreamOperator<JSONObject> suppleMapDs = orderMsgAllDs.map(new RichMapFunction<JSONObject, JSONObject>() {
+        SingleOutputStreamOperator<JSONObject> suppleMapDs = supplementDataMap.map(new RichMapFunction<JSONObject, JSONObject>() {
             private transient Random random;
 
             @Override

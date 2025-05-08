@@ -17,7 +17,7 @@ public class SiliconFlowApi {
 
     private static final ConnectionPool CONNECTION_POOL = new ConnectionPool(200, 5, TimeUnit.MINUTES);
     private static final String SILICON_API_ADDR = "https://api.siliconflow.cn/v1/chat/completions";
-    private static final String SILICON_API_TOKEN = ConfigUtils.getString("silicon.api.token");
+    private static final String SILICON_API_TOKEN = "sk-kzgrgyqhyptmaqyzcqvhdpmwpvsnmowmjksxvdkrksplrbol";
     private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
             .connectionPool(CONNECTION_POOL)
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -35,7 +35,7 @@ public class SiliconFlowApi {
                             MediaType.parse("application/json; charset=utf-8"),
                             requestBody.toJSONString()
                                         ))
-                    .addHeader("Authorization", "Bearer " + apiToken)
+                    .addHeader("Authorization", "Bearer " + "sk-kzgrgyqhyptmaqyzcqvhdpmwpvsnmowmjksxvdkrksplrbol")
                     .addHeader("Content-Type", "application/json")
                     .build();
 
@@ -56,7 +56,7 @@ public class SiliconFlowApi {
 
     private static JSONObject buildRequestBody(String prompt) {
         return new JSONObject()
-                .fluentPut("model", "Pro/deepseek-ai/DeepSeek-R1-Distill-Qwen-7B")
+                .fluentPut("model", "Pro/Qwen/Qwen2.5-7B-Instruct")
                 .fluentPut("stream", false)
                 .fluentPut("max_tokens", 512)
                 .fluentPut("temperature", 0.7)

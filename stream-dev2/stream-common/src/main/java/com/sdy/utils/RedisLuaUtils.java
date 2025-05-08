@@ -22,11 +22,11 @@ import java.util.*;
 
 public class RedisLuaUtils {
     private static final Logger logger = LoggerFactory.getLogger(RedisLuaUtils.class);
-    private static final String REDIS_HOST = ConfigUtils.getString("redis.host");
-    private static final int REDIS_PORT = ConfigUtils.getInt("redis.port");
-    private static final String REDIS_USER = ConfigUtils.getString("redis.user");
-    private static final String REDIS_PASSWORD = ConfigUtils.getString("redis.pwd");
-    private static final int REDIS_DB = ConfigUtils.getInt("redis.blacklist.db");
+//    private static final String REDIS_HOST = ConfigUtils.getString("redis.host");
+//    private static final int REDIS_PORT = ConfigUtils.getInt("redis.port");
+//    private static final String REDIS_USER = ConfigUtils.getString("redis.user");
+//    private static final String REDIS_PASSWORD = ConfigUtils.getString("redis.pwd");
+//    private static final int REDIS_DB = ConfigUtils.getInt("redis.blacklist.db");
     private static final String SET_KEY = "sensitive_words";
 
     // Lua脚本（支持批量/单条查询）
@@ -53,11 +53,11 @@ public class RedisLuaUtils {
             poolConfig.setTestOnBorrow(true);
 
             String uri = String.format("redis://%s:%s@%s:%d/%d",
-                    REDIS_USER,
-                    REDIS_PASSWORD,
-                    REDIS_HOST,
-                    REDIS_PORT,
-                    REDIS_DB);
+                    "default",
+                    "zh1028",
+                    "10.160.60.17",
+                    6379,
+                    1);
 
             jedisPool = new JedisPool(
                     poolConfig,

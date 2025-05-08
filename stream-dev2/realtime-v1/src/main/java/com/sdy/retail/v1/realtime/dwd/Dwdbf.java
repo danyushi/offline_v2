@@ -41,6 +41,7 @@ public class Dwdbf {
 
         tableEnv.executeSql("select * from topic_db").print();
 
+        //购物车表
         Table cartInfo = tableEnv.sqlQuery("select\n" +
                 "`after`['id'] as id,\n" +
                 "`after`['user_id'] as user_id,\n" +

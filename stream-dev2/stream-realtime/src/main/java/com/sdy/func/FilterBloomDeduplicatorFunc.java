@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @Package com.retailersv1.func.FilterBloomDeduplicatorFunc
- * @Author zhou.han
- * @Date 2025/3/31 22:25
+ * @Author danyu-shi
+ * @Date 2025/5/8 8:46
  * @description: 布隆过滤器
  */
 public class FilterBloomDeduplicatorFunc extends RichFilterFunction<JSONObject> {

@@ -6,8 +6,8 @@ import org.apache.flink.util.Collector;
 
 /**
  * @Package com.retailersv1.func.IntervalJoinOrderCommentAndOrderInfoFunc
- * @Author zhou.han
- * @Date 2025/3/16 16:28
+ * @Author danyu-shi
+ * @Date 2025/5/8 8:46
  * @description: orderComment Join orderInfo Msg
  */
 public class IntervalJoinOrderCommentAndOrderInfoFunc extends ProcessJoinFunction<JSONObject,JSONObject,JSONObject> {

@@ -73,19 +73,7 @@ public class DimApp {
         DataStreamSource<String> kafkastrdev2 = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka Source");
         SingleOutputStreamOperator<JSONObject> jsonObjDS = kafkastrdev2.process(new ProcessFunction<String, JSONObject>() {@Override public void processElement(String s, ProcessFunction<String, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
             JSONObject jsonObj = JSON.parseObject(s);
-//            String db = jsonObj.getString("database");
-//            String type = jsonObj.getString("type");
-//            String data = jsonObj.getString("data");
-
-//            if ("gmall2025".equals(db)
-//                    && ("insert".equals(type)
-//                    || "update".equals(type)
-//                    || "delete".equals(type)
-//                    || "bootstrap-insert".equals(type))
-//                    && data != null
-//                    && data.length() > 2) {
                 collector.collect(jsonObj);
-//            }
         }}
         );
 
