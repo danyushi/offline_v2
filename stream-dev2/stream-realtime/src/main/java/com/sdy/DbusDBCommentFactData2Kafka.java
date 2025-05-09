@@ -3,6 +3,7 @@ package com.sdy;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sdy.common.domain.Constant;
+import com.sdy.common.utils.KafkaUtil;
 import com.sdy.func.AsyncHbaseDimBaseDicFunc;
 
 import com.sdy.func.IntervalJoinOrderCommentAndOrderInfoFunc;
@@ -46,10 +47,6 @@ public class DbusDBCommentFactData2Kafka {
     static {
         sensitiveWordsLists = SensitiveWordsUtils.getSensitiveWordsLists();
     }
-//
-//    private static final String kafka_botstrap_servers = ConfigUtils.getString("kafka.bootstrap.servers");
-//    private static final String kafka_cdc_db_topic = ConfigUtils.getString("kafka.cdc.db.topic");
-//    private static final String kafka_db_fact_comment_topic = ConfigUtils.getString("kafka.db.fact.comment.topic");
 
     @SneakyThrows
     public static void main(String[] args) {
@@ -59,7 +56,6 @@ public class DbusDBCommentFactData2Kafka {
         // TODO -XX:ReservedCodeCacheSize=256m -XX:+UseCodeCacheFlushing -XX:CodeCacheMinimumFreeSpace=20%
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-//        EnvironmentSettingUtils.defaultParameter(env);
         env.setParallelism(10);
 
         // 评论表 取数
@@ -215,12 +211,10 @@ public class DbusDBCommentFactData2Kafka {
             }
         }).uid("add json ds").name("add json ds");
 
-        suppleTimeFieldDs.print();
+//        suppleTimeFieldDs.print();
 
-//        suppleTimeFieldDs.map(js -> js.toJSONString())
-//                .sinkTo(
-//                KafkaUtils.buildKafkaSink(kafka_botstrap_servers, kafka_db_fact_comment_topic)
-//        ).uid("kafka_db_fact_comment_sink").name("kafka_db_fact_comment_sink");
+        suppleTimeFieldDs.map(js -> js.toJSONString())
+                .sinkTo(KafkaUtil.getKafkaSink("stream-DbusDBComment-danyushi"));
 
 
         env.execute();

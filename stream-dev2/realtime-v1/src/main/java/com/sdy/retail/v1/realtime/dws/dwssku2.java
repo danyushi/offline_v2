@@ -78,7 +78,7 @@ public class dwssku2 {
         // 2.按照唯一键(订单明细的id)进行分组
         KeyedStream<JSONObject, String> orderDetailIdKeyedDS = jsonObjDS.keyBy(jsonObj -> jsonObj.getString("id"));
 //        orderDetailIdKeyedDS.print();
-        //  去重
+        //  去重 状态 + 抵消    优点：时效性好    缺点：如果出现重复，需要向下游传递3条数据(数据膨胀)
         SingleOutputStreamOperator<JSONObject> distinctDS = orderDetailIdKeyedDS.process(
                 new KeyedProcessFunction<String, JSONObject, JSONObject>() {
                     private ValueState<JSONObject> lastJsonObjState;
@@ -130,6 +130,9 @@ public class dwssku2 {
                         )
         );
 //        withWatermarkDS.print();
+
+
+//        对流中数据进行类型转换  jsonObj->统计的实体类对象
         SingleOutputStreamOperator<TradeSkuOrderBean> beanDS = withWatermarkDS.map(
                 new MapFunction<JSONObject, TradeSkuOrderBean>() {
                     @Override
@@ -194,6 +197,8 @@ public class dwssku2 {
                 }
         );
 //        reduceDS.print("reduce-->");
+//
+// 异步IO
         SingleOutputStreamOperator<TradeSkuOrderBean> withSkuInfoDS = AsyncDataStream.unorderedWait(
                 reduceDS,
                 new DimAsyncFunction<TradeSkuOrderBean>() {
@@ -243,6 +248,9 @@ public class dwssku2 {
                 TimeUnit.SECONDS
         );
 //        withSpuInfoDS.print();
+
+
+
 //         11.关联tm维度
         SingleOutputStreamOperator<TradeSkuOrderBean> withTmDS = AsyncDataStream.unorderedWait(
                 withSpuInfoDS,
@@ -336,7 +344,7 @@ public class dwssku2 {
                 TimeUnit.SECONDS
         );
 
-//        withC1DS.print("======>");
+        withC1DS.print("======>");
 
 
         // 15.将关联的结果写到Doris表中

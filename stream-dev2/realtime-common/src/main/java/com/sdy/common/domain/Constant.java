@@ -13,7 +13,7 @@ public class Constant {
     public static final String TOPIC_LOG = "stream-dev1-danyushi";
     public static final String TOPICGl = "realtime_v2_db";
 
-    public static final String TOPICinfo2 = "realtime_v2_fact_comment_db";
+    public static final String TOPICinfo2 = "stream-DbusDBComment-danyushi";
     public static final String MYSQL_HOST = "10.160.60.17";
     public static final int MYSQL_PORT = 3306;
     public static final String MYSQL_USER_NAME = "root";

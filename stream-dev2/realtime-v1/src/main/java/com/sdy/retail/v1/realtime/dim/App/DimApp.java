@@ -102,6 +102,7 @@ public class DimApp {
         DataStream<String> mySQLSource = env
                 .fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source");
 
+//        对配置流中的数据类型进行转换  jsonStr->实体类对象
         SingleOutputStreamOperator<TableProcessDim> tpDS = mySQLSource.map(new MapFunction<String, TableProcessDim>() {
             @Override
             public TableProcessDim map(String s) throws Exception {
@@ -109,8 +110,12 @@ public class DimApp {
                 String op = jsonObj.getString("op");
                 TableProcessDim tableProcessDim = null;
                 if ("d".equals(op)) {
+                    //对配置表进行了一次删除操作   从before属性中获取删除前的配置信息
+
                     tableProcessDim = jsonObj.getObject("before", TableProcessDim.class);
                 } else {
+                    //对配置表进行了读取、添加、修改操作   从after属性中获取最新的配置信息
+
                     tableProcessDim = jsonObj.getObject("after", TableProcessDim.class);
                 }
 
@@ -138,17 +143,21 @@ public class DimApp {
                     @Override
 
                     public TableProcessDim map(TableProcessDim tp) throws Exception {
+                        //获取对配置表进行的操作的类型
                         String op = tp.getOp();
                         String sinkTable = tp.getSinkTable();
+                        //获取在HBase中建表的列族
                         String[] sinkFamilies = tp.getSinkFamily().split(",");
                         if ("d".equals(op)) {
+                            //从配置表中删除了一条数据  将hbase中对应的表删除掉
                             HBaseUtil.dropHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable);
 
                         } else if ("r".equals(op) || "c".equals(op)) {
-
+                            //从配置表中读取了一条数据或者向配置表中添加了一条配置   在hbase中执行建表
                             HBaseUtil.createHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable, sinkFamilies);
 
                         } else {
+                            //对配置表中的配置信息进行了修改   先从hbase中将对应的表删除掉，再创建新表
                             HBaseUtil.dropHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable);
                             HBaseUtil.createHBaseTable(hbaseConn, Constant.HBASE_NAMESPACE, sinkTable, sinkFamilies);
 
@@ -162,7 +171,9 @@ public class DimApp {
 
         MapStateDescriptor<String, TableProcessDim> mapStateDescriptor
                 = new MapStateDescriptor<String, TableProcessDim>("mapStateDescriptor",String.class, TableProcessDim.class);
+
         BroadcastStream<TableProcessDim> broadcastDS = tpDS.broadcast(mapStateDescriptor);
+
 
         BroadcastConnectedStream<JSONObject,TableProcessDim> coonectDS = jsonObjDS.connect(broadcastDS);
 
@@ -171,7 +182,9 @@ public class DimApp {
         );
 
         dimDS.print();
-//        dimDS.addSink(new INHBase());
+
+        //数据添如Hbase
+        dimDS.addSink(new INHBase());
 
 
         env.execute();

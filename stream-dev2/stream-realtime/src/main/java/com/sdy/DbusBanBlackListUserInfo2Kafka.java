@@ -17,6 +17,8 @@ import lombok.SneakyThrows;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
+import org.apache.flink.api.common.restartstrategy.RestartStrategies;
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -25,6 +27,7 @@ import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Package com.retailersv1.DbusBanBlackListUserInfo2Kafka
@@ -36,17 +39,16 @@ import java.util.List;
  */
 public class DbusBanBlackListUserInfo2Kafka {
 
-//    private static final String kafka_botstrap_servers = ConfigUtils.getString("kafka.bootstrap.servers");
-//    private static final String kafka_db_fact_comment_topic = ConfigUtils.getString("kafka.db.fact.comment.topic");
-//    private static final String kafka_result_sensitive_words_topic = ConfigUtils.getString("kafka.result.sensitive.words.topic");
-
     @SneakyThrows
     public static void main(String[] args) {
 
         System.setProperty("HADOOP_USER_NAME","root");
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-//        EnvironmentSettingUtils.defaultParameter(env);
+
+        env.enableCheckpointing(1000 * 30);
+        env.setRestartStrategy(RestartStrategies.failureRateRestart(5, Time.of(5, TimeUnit.MINUTES), Time.of(10, TimeUnit.SECONDS)));
+
 
         SingleOutputStreamOperator<String> kafkaCdcDbSource = env.fromSource(
                 KafkaUtils.buildKafkaSource(
@@ -93,16 +95,15 @@ public class DbusBanBlackListUserInfo2Kafka {
 
 //        secondCheckMap.print();
 
-
-
 //        secondCheckMap.map(data -> data.toJSONString())
 //                        .sinkTo(
-//                                KafkaUtil.getKafkaSink("stream-DbusBanBlack-danyushi") );
+//                                KafkaUtil.getKafkaSink("stream-DbusBanBlack-danyushi")
+//                        );
 
         DataStreamSource<String> dbStrDS = KafkaUtil.getKafkaSource(env, "stream-DbusBanBlack-danyushi", "DbusBanBlack");
 
         dbStrDS.print();
-//        dbStrDS.sinkTo(FlinkSinkUtil.getDorisSink("DbusBanBlackListUserInfo"));
+        dbStrDS.sinkTo(FlinkSinkUtil.getDorisSink("DbusBanBlackListUserInfo"));
 
 
         env.execute();

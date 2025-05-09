@@ -42,7 +42,7 @@ public class DwdBaseDb {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         // 并行度，
         env.setParallelism(4);
-//3.2     创建消费者对象
+//     创建消费者对象
         DataStreamSource<String> dbStrDS = KafkaUtil.getKafkaSource(env, "stream-dev2-danyushi", "group03");
 
         dbStrDS.print();

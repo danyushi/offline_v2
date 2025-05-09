@@ -56,6 +56,7 @@ public class dwsHomePageView {
 
 
         SingleOutputStreamOperator<JSONObject> mapObjDS = kafkasource.map(JSON::parseObject);
+//        .过滤首页以及详情页
         SingleOutputStreamOperator<JSONObject> filterDS = mapObjDS.filter(
                 new FilterFunction<JSONObject>() {
                     @Override
